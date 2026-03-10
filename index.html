@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="pt"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>PACT by PALCORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0b1628;--rd:#c41e3a;--rA:rgba(196,30,58,.08);--ik:#1a1a2e;--mt:#6b7280;--dm:#9ca3af;--bg:#f5f5f7;--wh:#fff;--bd:#e5e7eb;--gd:#d97706;--gL:#fffbeb;--gn:#0d9668;--gL2:#ecfdf5;--bl:#2563eb;--pp:#7c3aed;--sh:0 1px 3px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ik);max-width:420px;margin:0 auto;min-height:100dvh}
+button{font-family:inherit;cursor:pointer}input,textarea,select{font-family:inherit}
+input[type=number]{-moz-appearance:textfield}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+.hd{background:var(--nv);padding:12px 16px 10px;color:#fff}.hd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.hd-br{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--rd);font-weight:700}
+.hd h1{font-size:20px;font-weight:800;letter-spacing:-1px;line-height:1}.hd .sub{font-size:9px;color:rgba(255,255,255,.3);margin-top:1px}
+.pb{height:3px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:8px;overflow:hidden}.pb-f{height:100%;background:var(--rd);border-radius:2px;transition:width .3s}
+.sc{display:none;padding:14px 14px 90px}.sc.on{display:block}
+.sec{background:var(--rd);color:#fff;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;border-radius:4px;margin-bottom:12px}
+.cd{background:var(--wh);border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid var(--bd);box-shadow:var(--sh)}
+.cd.on{background:#ecfdf5;border-color:#86efac}
+.in{font-size:11px;color:var(--mt);margin-bottom:6px;font-weight:500}
+.tb{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.tb th{background:#f3f4f6;padding:8px;text-align:left;font-weight:600;border:1px solid var(--bd);font-size:11px;text-transform:uppercase;color:var(--mt)}
+.tb td{padding:8px;border:1px solid var(--bd);color:var(--ik)}
+.tb tr:hover{background:#f9fafb}
+.tl{font-size:12px;font-weight:600;color:var(--mt);margin-bottom:8px;text-transform:uppercase}
+.inp{width:100%;padding:10px;border:1px solid var(--bd);border-radius:6px;font-size:14px;color:var(--ik);background:var(--wh)}
+.inp:focus{outline:none;border-color:var(--rd);background:#fff}
+.opt{background:#f3f4f6;border:1px solid var(--bd);padding:6px 12px;border-radius:4px;font-size:11px;font-weight:500;color:var(--ik);transition:all .15s}
+.opt:hover{background:#e5e7eb}
+.opt.on{background:var(--rd);color:#fff;border-color:var(--rd)}
+.nav{display:flex;gap:6px;margin-top:12px;justify-content:space-between}
+.nav button{flex:1}
+.btn{background:var(--rd);color:#fff;padding:10px;border:none;border-radius:6px;font-weight:600;font-size:12px;transition:all .2s;cursor:pointer}
+.btn:hover{opacity:.9;transform:scale(1.02)}
+.btn:active{transform:scale(.98)}
+.btn.sub{background:var(--gd)}
+.btn.dis{background:#d1d5db;cursor:not-allowed;opacity:.5}
+.info{font-size:12px;color:var(--mt);margin-bottom:8px;line-height:1.4}
+.fld{margin-bottom:12px}
+.lbl{font-size:11px;font-weight:600;color:var(--ik);margin-bottom:4px;display:block;text-transform:uppercase}
+.err{color:#dc2626;font-size:11px;margin-top:4px}
+.suc{color:var(--gn);font-size:11px;margin-top:4px}
+.rw{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.rl{color:var(--mt);font-weight:500}
+.rv{font-weight:600;color:var(--ik)}
+.tg{display:flex;gap:3px;background:var(--bd);border-radius:4px;padding:2px;width:fit-content}
+.tg button{flex:1;padding:4px 8px;font-size:11px;font-weight:500;background:transparent;border:none;color:var(--mt);transition:all .15s;border-radius:2px}
+.tg button.on{background:var(--wh);color:var(--rd);box-shadow:var(--sh)}
+.vob{padding:8px;background:var(--wh);border:2px solid var(--bd);border-radius:6px;cursor:pointer;transition:all .15s;font-size:12px;font-weight:500}
+.vob:hover{border-color:var(--gd);background:#fef3c7}
+.vob.on{background:var(--gL2);border-color:var(--gn);color:var(--gn)}
+.spc{display:flex;flex-direction:column;gap:8px}
+.spf{display:flex;gap:8px}
+.spf input{flex:1}
+.spf button{flex:0 0 auto;padding:10px 12px}
+.cht{font-size:10px;color:var(--mt);margin-bottom:4px;font-weight:500;text-transform:uppercase}
+.cfg .tl{margin-top:12px;margin-bottom:8px}
+.cfg .cd{background:#fef3c7}
+</style>
+</head><body>
+<div class="hd">
+<div class="hd-top">
+<div><div class="hd-br">PACT by PALCORE</div><h1>PACT</h1></div>
+<button id="lng" style="background:none;border:none;color:var(--rd);font-size:16px;cursor:pointer;padding:0">🌐</button>
+</div>
+<div class="pb"><div class="pb-f" id="pbf" style="width:0%"></div></div>
+</div>
+<div class="sc on" id="sc1">
+<div class="sec">CONSULTANTS CONFIG</div>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<button id="addBtn" class="btn sub" style="flex:1">+ ADD</button>
+<button id="expBtn" class="btn" style="flex:1">↓ EXPORT</button>
+<button id="impBtn" class="btn" style="flex:1">↑ IMPORT</button>
+</div>
+<div id="list"></div>
+<button id="stBtn" class="btn sub" style="width:100%;margin-top:12px">NEXT STEP</button>
+</div>
+<div class="sc" id="sc2">
+<div class="sec">PROFILE SETUP</div>
+<div id="prof"></div>
+<div class="nav">
+<button onclick="STEP=0;render()" class="btn">BACK</button>
+<button onclick="STEP=2;render()" class="btn sub">NEXT</button>
+</div>
+</div>
+<div class="sc" id="sc3">
+<div class="sec">PLANNING</div>
+<div id="plan"></div>
+<div class="nav">
+<button onclick="STEP=1;render()" class="btn">BACK</button>
+<button onclick="STEP=3;render()" class="btn sub">NEXT</button>
+</div>
+</div>
+<div class="sc" id="sc4">
+<div class="sec">RESULTS</div>
+<div id="results"></div>
+<div style="margin-top:16px;display:flex;gap:8px">
+<button onclick="STEP=0;render()" class="btn" style="flex:1">START OVER</button>
+<button id="savBtn" class="btn sub" style="flex:1">SAVE CONFIG</button>
+</div>
+</div>
+<textarea id="imp" style="display:none"></textarea>
+<script>
+var STEP=0,P="en",pV1=0,pV3=0,pDesired=0,CFG=null,DEMO={version:"1.0",lang:"en",goal:500000,dcPin:"0000",dcEmail:"",consultants:[{name:"John",pin:"1111",fat:50000,T:20,AV:100,V:10,IC:0,A:50,VIS:1,OF:0,CC:0,excAV:0}]},COLORS=["#6b7280","#0d9668","#d97706","#2563eb","#7c3aed","#c41e3a","#f59e0b","#ec4899"];
+function n2g(n){return n*1.3}
+function g2n(g){return g/1.3}
+function fK(n){return(n/1e3).toFixed(0)+"k"}
+function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",")}
+function srand(){return Math.random().toString(36).substr(2,9)}
+function genHash(){
+if(!CFG)return"";
+var h={version:"1.0",lang:P,goal:CFG.goal,dcPin:CFG.dcPin,dcEmail:CFG.dcEmail,consultants:CFG.consultants.map(function(c){return{name:c.name,pin:c.pin,fat:c.fat,T:c.T,AV:c.AV,V:c.V,IC:c.IC,A:c.A,VIS:c.VIS,OF:c.OF,CC:c.CC,excAV:c.excAV}})};
+var j=JSON.stringify(h);
+var e=btoa(j);
+return e}
+function loadFromHash(){
+try{
+if(!location.hash)return;
+var h=location.hash.slice(1);
+var j=atob(h);
+var o=JSON.parse(j);
+if(o.version==="1.0"){
+CFG=o;
+P=o.lang||"en";}
+}catch(e){
+console.error("Invalid hash",e);}
+}
+function saveCfg(){
+if(!CFG)return;
+location.hash="#"+genHash();}
+function loadCfg(){
+var k="pact_cfg";
+try{
+var j=localStorage.getItem(k);
+if(j){
+CFG=JSON.parse(j);
+P=CFG.lang||"en";}
+}catch(e){
+console.log("No saved config");}
+}
+function showToast(msg){
+var t=document.createElement("div");
+t.style.cssText="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:6px;font-size:12px;z-index:9999;animation:slideUp .3s;max-width:90%";
+document.body.appendChild(t);
+t.textContent=msg;
+setTimeout(function(){t.remove();},2e3);
+}
+function render(){
+updatePB();
+document.querySelectorAll(".sc").forEach(function(s){s.classList.remove("on")});
+document.getElementById("sc"+(STEP+1)).classList.add("on");
+var h="";
+if(STEP===0){
+h+='<div class="cd">';
+h+='<table class="tb">';
+h+='<tr><th>NAME</th><th>PIN</th><th>FAT</th><th>T</th><th>Actions</th></tr>';
+if(CFG&&CFG.consultants){
+CFG.consultants.forEach(function(c,i){
+h+='<tr><td><input type="text" class="inp" data-ci="'+i+'" data-sf="name" style="max-width:60px" value="'+c.name+'"></td>';
+h+='<td><input type="text" class="inp" data-ci="'+i+'" data-sf="pin" style="max-width:50px" value="'+c.pin+'"></td>';
+h+='<td><input type="number" class="inp" data-ci="'+i+'" data-sf="fat" style="max-width:70px" value="'+c.fat+'"></td>';
+h+='<td><input type="number" class="inp" data-ci="'+i+'" data-sf="T" style="max-width:50px" value="'+c.T+'"></td>';
+h+='<td><button onclick="delConsultant('+i+')" class="opt" style="background:#fee2e2;color:#dc2626;width:100%">DEL</button></td></tr>';});
+}
+h+='</table></div>';
+}
+if(STEP===1){
+h+='<div class="cd"><div class="tl">'+(P==="pt"?"HOJE":"TODAY")+'</div>';
+var v1o=p?["Ganhar mais do que agora","Construir carteira de clientes","Mudar de vida","Ainda não sei"]:["Earn more than now","Build a client portfolio","Change my life","Not sure yet"];
+v1o.forEach(function(o,i){h+='<div class="vob'+(pV1===i+1?" on":"")+'" data-pv1="'+(i+1)+'">'+o+'</div>'});
+h+='</div>';
+h+='<div class="cd"><div class="tl">'+(P==="pt"?"DAQUI A 3 ANOS":"IN 3 YEARS")+'</div>';
+var v3o=P==="pt"?["Ser referência na zona","Investir em imóveis","Ter a minha empresa","Coordenar ou liderar equipa"]:["Be the local reference","Invest in property","Have my own company","Lead or coordinate a team"];
+v3o.forEach(function(o,i){h+='<div class="vob'+(pV3===i+1?" on":"")+'" data-pv3="'+(i+1)+'">'+o+'</div>'});
+h+='</div>';
+return h+nav(1,3)+'</div>';
+}
+if(STEP===3){
+h+='<div class="sec">'+(P==="pt"?"O MEU PLANO":"MY PLAN")+'</div>';
+h+='<div class="info">'+(P==="pt"?"Quanto queres receber <strong>depois de impostos</strong>?":"How much do you want <strong>after taxes</strong>?")+'</div>';
+h+='<div class="cd"><div class="tl">'+(P==="pt"?"LÍQUIDO POR MÊS":"NET PER MONTH")+'</div>';
+h+='<input id="pDesired" type="number" class="inp" style="font-size:24px;font-weight:800;text-align:center;padding:16px" value="'+(pDesired||"")+'" placeholder="1.500">';
+h+='<div style="display:flex;gap:4px;margin-top:8px">';
+[1000,1500,2000,3000,5000].forEach(function(v){h+='<button class="opt'+(pDesired===v?" on":"")+'" data-pdes="'+v+'">'+fmt(v)+'</button>'});
+h+='</div></div>';
+if(pDesired>0){
+var tgy=n2g(pDesired*12),agNeed=tgy/.30;
+h+='<div class="cd"><div class="tl">'+(P==="pt"?"PARA GANHAR ":"TO EARN ")+fmt(pDesired)+(P==="pt?"/MÊS":"/MO")+'</div>';
+h+='<div class="rw"><span class="rl">'+(P==="pt"?"Bruto necessário":"Gross needed")+'</span><span class="rv">'+fmt(tgy)+'/'+(P==="pt"?"ano":"yr")+'</span></div>';
+h+='<div class="rw"><span class="rl">'+(P==="pt"?"Agência precisa de":"Agency needs")+'</span><span class="rv" style="color:var(--gd)">'+fK(agNeed)+'/'+(P==="pt"?"ano":"yr")+'</span></div>';
+}
+h+=nav(3,1)+'</div>';
+}
+if(STEP===2){
+h+='<div class="sec">'+(P==="pt"?"OBJECTIVOS":"GOALS")+'</div>';
+h+='<div class="cd"><div class="tl">'+(P==="pt"?"META ANUAL AGÊNCIA":"AGENCY ANNUAL GOAL")+'</div>';
+h+='<input id="pGoal" type="number" class="inp" style="font-size:20px;font-weight:800;text-align:center;padding:12px" value="'+(CFG&&CFG.goal||"")+'" placeholder="500.000">';
+h+='<div style="display:flex;gap:4px;margin-top:8px">';
+[300000,500000,800000,1000000].forEach(function(v){h+='<button class="opt'+(CFG&&CFG.goal===v?" on":"")+'" data-goal="'+v+'">'+fK(v)+'</button>'});
+h+='</div></div>';
+h+='<div class="cd"><div class="tl">'+(P==="pt"?"DEFINIÇÕES":"SETTINGS")+'</div>';
+h+='<div class="fld"><label class="lbl">'+(P==="pt"?"PIN director":"Director PIN")+'</label><input type="text" class="inp" id="pPin" value="'+(CFG&&CFG.dcPin||"")+'" placeholder="0000"></div>';
+h+='<div class="fld"><label class="lbl">'+(P==="pt"?"Email contacto":"Contact email")+'</label><input type="email" class="inp" id="pEmail" value="'+(CFG&&CFG.dcEmail||"")+'" placeholder="director@example.com"></div>';
+h+='</div>';
+h+=nav(2,3)+'</div>';
+}
+document.getElementById("prof").innerHTML=h;
+attachEvents();
+}
+function nav(from,to){
+return'<div class="nav"><button onclick="STEP='+from+';render()" class="btn">BACK</button><button onclick="STEP='+to+';render()" class="btn sub">NEXT</button></div>';}
+function updatePB(){
+var p=Math.round((STEP+1)/4*100);
+document.getElementById("pbf").style.width=p+"%";}
+function attachEvents(){
+var gi=document.getElementById("pGoal"),pi=document.getElementById("pPin"),ei=document.getElementById("pEmail");
+if(!CFG)CFG=JSON.parse(JSON.stringify(DEMO));
+if(CFG.goal)gi.value=CFG.goal;
+document.querySelectorAll("[data-goal]").forEach(function(btn){btn.addEventListener("click",function(){var v=+this.dataset.goal;if(!CFG)CFG=JSON.parse(JSON.stringify(DEMO));CFG.goal=v;gi.value=v;render();});});
+document.querySelectorAll("[data-pdes]").forEach(function(btn){btn.addEventListener("click",function(){pDesired=+this.dataset.pdes;render();});});
+document.getElementById("pDesired").addEventListener("input",function(){pDesired=+this.value||0;render();});
+document.querySelectorAll("[data-pv1]").forEach(function(btn){btn.addEventListener("click",function(){pV1=+this.dataset.pv1;render();});});
+document.querySelectorAll("[data-pv3]").forEach(function(btn){btn.addEventListener("click",function(){pV3=+this.dataset.pv3;render();});});
+document.getElementById("addBtn").addEventListener("click",function(){if(!CFG)CFG=JSON.parse(JSON.stringify(DEMO));if(CFG.consultants.length>=15){alert(P==="pt"?"Máximo 15":"Max 15");return}CFG.consultants.push({name:"",pin:"",fat:0,T:0});saveCfg();render();});
+document.getElementById("expBtn").addEventListener("click",function(){if(!CFG)return;var exp=genHash();var textarea=document.getElementById("imp");textarea.value=exp;textarea.select();document.execCommand("copy");showToast(P==="pt"?"Copiado!":"Copied!");});
+document.getElementById("impBtn").addEventListener("click",function(){var ta=document.getElementById("imp");var text=prompt(P==="pt"?"Cole a exportação:":"Paste export:");if(text){ta.value=text;location.hash="#"+text;location.reload();}});
+document.getElementById("stBtn").addEventListener("click",function(){if(!CFG){alert(P==="pt"?"Nenhum consultor":"No consultants");return}CFG.lang=P;saveCfg();STEP=1;render();});
+document.getElementById("savBtn").addEventListener("click",function(){var gi=document.getElementById("pGoal"),pi=document.getElementById("pPin"),ei=document.getElementById("pEmail");
+if(!CFG)CFG=JSON.parse(JSON.stringify(DEMO));
+CFG.goal=gi?+gi.value:500000;CFG.dcPin=pi?pi.value:"0000";CFG.dcEmail=ei?ei.value:"";
+var list=document.querySelectorAll("[data-ci]"),newTeam=[];
+list.forEach(function(row){
+var m={};
+row.querySelectorAll("[data-sf]").forEach(function(inp){
+var f=inp.dataset.sf,v=inp.value;
+if(["fat","T","AV","V","IC","A","VIS","OF","CC","excAV"].indexOf(f)>=0)m[f]=+v||0;
+else m[f]=v;});
+if(m.name)newTeam.push(m);});
+CFG.consultants=newTeam;saveCfg();STEP=0;render();showToast(P==="pt"?"Dados guardados":"Data saved");}
+function addConsultant(){
+if(!CFG)CFG=JSON.parse(JSON.stringify(DEMO));
+if(CFG.consultants.length>=15){alert(P==="pt"?"Máximo 15":"Max 15");return}
+CFG.consultants.push({name:"",pin:"",fat:0,T:0});saveCfg();render();}
+function delConsultant(i){if(!CFG)return;CFG.consultants.splice(i,1);saveCfg();render();}
+/* ═══════════════ INIT ═══════════════ */
+loadCfg();if(!CFG)loadFromHash();render();
+})();
+</script>
+</body></html>
