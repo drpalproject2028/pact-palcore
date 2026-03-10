@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>FIT Consultor Imobiliário · PALCORE</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f5f5f0;min-height:100vh}
+@media print{.no-print{display:none!important}.print-only{display:block!important}}</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head><body><div id="root"></div>
+<script type="text/babel">
+const{useState,useCallback}=React;
+const FIT=[
+{id:1,text:"Consigo ligar para clientes todos os dias, mesmo quando não me apetece.",r:false},
+{id:2,text:"Quando um telefonema é difícil, prefiro adiá-lo para mais tarde.",r:true},
+{id:3,text:"Se prometo voltar a ligar, cumpro sempre.",r:false},
+{id:4,text:"Se um cliente não atende, faço várias tentativas antes de desistir.",r:false},
+{id:5,text:"Gosto de seguir passos organizados e usar checklists no trabalho.",r:false},
+{id:6,text:"Quando uma regra atrapalha, acho que se deve contornar.",r:true,gate:"en"},
+{id:7,text:"Quando me dizem 'não', não levo a mal — continuo a tentar.",r:false},
+{id:8,text:"Quando estou cansado, perco o foco e deixo de produzir.",r:true},
+{id:9,text:"Mantenho a calma quando um cliente está nervoso ou a pressionar.",r:false},
+{id:10,text:"Sem alguém a dar-me estrutura, tendo a procrastinar.",r:true},
+{id:11,text:"Aprendo rápido novas rotinas e formas de trabalhar.",r:false},
+{id:12,text:"Prefiro ganhar menos mas de forma honesta, do que ganhar mais com atalhos.",r:false,gate:"ep"},
+];
+const SJT=[
+{id:1,title:"O dono do imóvel quer um preço muito acima do mercado",opts:[
+{t:"Aceitas o preço para ficar com a angariação e 'logo se vê'.",p:0,l:"A"},
+{t:"Mostras imóveis semelhantes vendidos na zona, fazes um plano de 14 dias e combinas rever o preço.",p:4,l:"B"},
+{t:"Dizes que ele está errado e que não faz sentido insistir.",p:0,l:"C"},
+{t:"Aceitas sem plano e esperas que o mercado corrija.",p:2,l:"D"}]},
+{id:2,title:"Um cliente pede para enviares documentos pessoais por WhatsApp",opts:[
+{t:"Envias logo, é mais rápido.",p:0,l:"A"},
+{t:"Explicas que por segurança precisas de autorização escrita e envias só o essencial.",p:4,l:"B"},
+{t:"Dizes que não usas WhatsApp para nada profissional, sem dar alternativa.",p:2,l:"C"},
+{t:"Envias e depois apagas a conversa.",p:0,l:"D"}]},
+{id:3,title:"Alguém quer visitar um imóvel mas não sabes se é comprador a sério",opts:[
+{t:"Marcas a visita para 'encher a agenda'.",p:0,l:"A"},
+{t:"Antes de marcar, perguntas: motivação, prazo, se já tem financiamento aprovado.",p:4,l:"B"},
+{t:"Fazes uma visita primeiro e só depois investigas.",p:2,l:"C"},
+{t:"Ignoras quem não tenha pré-aprovação bancária.",p:0,l:"D"}]},
+{id:4,title:"O proprietário pede-te para não mencionares um problema do imóvel nas visitas",opts:[
+{t:"Não mencionas. O importante é vender.",p:0,l:"A"},
+{t:"Explicas que tens obrigação de transparência e que esconder problemas gera reclamações.",p:4,l:"B"},
+{t:"Só mencionas se o comprador perguntar directamente.",p:2,l:"C"},
+{t:"Dizes que nessas condições não fazes visitas.",p:0,l:"D"}]},
+{id:5,title:"Falta um documento importante para comercializar, mas o cliente quer começar já",opts:[
+{t:"Avanças na mesma, o documento aparece depois.",p:0,l:"A"},
+{t:"Verificas o que falta, explicas o risco, crias plano para obter e só depois avanças.",p:4,l:"B"},
+{t:"Recusas fazer o que quer que seja até ter tudo.",p:2,l:"C"},
+{t:"Pedes ao cliente para arranjar uma alternativa provisória.",p:0,l:"D"}]},
+{id:6,title:"Passaram 30 dias sem resultados e a motivação está em baixo",opts:[
+{t:"Aumentas contactos diários, reforças rotina e pedes ajuda ao director.",p:4,l:"A"},
+{t:"Paras uma semana para descansar.",p:0,l:"B"},
+{t:"Mudas de método todos os dias à procura da fórmula mágica.",p:0,l:"C"},
+{t:"Reduzes objectivos e ficas só a atender quem te procura.",p:2,l:"D"}]
+};
+const STY=[
+{id:1,a:"Ganho energia a falar com pessoas.",b:"Preciso de tempo sozinho para recarregar.",d:"EI"},
+{id:2,a:"Prefiro factos e exemplos concretos.",b:"Prefiro pensar em possibilidades e no futuro.",d:"SN"},
+{id:3,a:"Decido com base na lógica e no que é justo.",b:"Decido a pensar nas pessoas e nas relações.",d:"TF"},
+{id:4,a:"Gosto de planear e cumprir o plano.",b:"Gosto de manter as opções abertas.",d:"JP"},
+{id:5,a:"Prefiro seguir um guião e rotina.",b:"Prefiro improvisar e adaptar.",d:"JP"},
+{id:6,a:"Gosto de medir resultados com números.",b:"Prefiro sentir o ambiente e ajustar.",d:"TF"},
+{id:7,a:"Quando é preciso, confronto com clareza.",b:"Evito confrontos e procuro harmonia.",d:"TF"},
+{id:8,a:"Prefiro acabar uma tarefa antes de começar outra.",b:"Trabalho em várias coisas ao mesmo tempo.",d:"JP"}
+];
+const CON=[
+{id:1,tp:"s",text:"Respondo sempre da mesma forma, mesmo que a pergunta esteja ao contrário."},
+{id:2,tp:"s",text:"Nunca falhei um compromisso na minha vida."},
+{id:3,tp:"ab",a:"Prefiro resultados rápidos, mesmo com atalhos.",b:"Prefiro fazer bem, mesmo que demore."},
+{id:4,tp:"ab",a:"Gosto de rotina diária fixa.",b:"Detesto rotina e prefiro variar."}
+];
+function Radar({dims}){
+const ax=[{k:"E",l:"Extroversão"},{k:"S",l:"Prático"},{k:"T",l:"Lógico"},{k:"J",l:"Estruturado"},{k:"resilience",l:"Resiliência"},{k:"ethics",l:"Ética"},{k:"discipline",l:"Disciplina"},{k:"learning",l:"Aprendizagem"}];
+const n=ax.length,cx=140,cy=140,mR=110,st=(2*Math.PI)/n;
+const pt=(i,v)=>{const a=-Math.PI/2+i*st,r=(v/4)*mR;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)}};
+const vs=ax.map(a=>Math.min(dims[a.k]||0,4)),ps=vs.map((v,i)=>pt(i,v));
+return React.createElement("svg",{width:280,height:280,viewBox:"0 0 280 280",style:{display:"block",margin:"0 auto"}},
+[1,2,3,4].map(l=>{const g=Array.from({length:n},(_,i)=>pt(i,l));
+return React.createElement("polygon",{key:"g"+l,points:g.map(p=>p.x+","+p.y).join(" "),fill:"none",stroke:"#ddd",strokeWidth:l===4?"1.5":"0.5"})}),
+ax.map((a,i)=>{const e=pt(i,4),lb=pt(i,4.6);
+return React.createElement("g",{key:"a"+i},
+React.createElement("line",{x1:cx,y1:cy,x2:e.x,y2:e.y,stroke:"#ccc",strokeWidth:"0.5"}),
+React.createElement("text",{x:lb.x,y:lb.y,textAnchor:"middle",dominantBaseline:"middle",fontSize:"7",fill:"#666",fontFamily:"Arial"},a.l))}),
+React.createElement("polygon",{points:ps.map(p=>p.x+","+p.y).join(" "),fill:"rgba(37,14,98,0.15)",stroke:"#250E62",strokeWidth:"2"}),
+ps.map((p,i)=>React.createElement("circle",{key:"c"+i,cx:p.x,cy:p.y,r:"3.5",fill:"#250E62"}))
+)}
+const C={bg:"#f5f5f0",wh:"#fff",bl:"#250E62",rd:"#C8102E",tx:"#1a1a2e",dm:"#666",bd:"#ddd",gn:"#1a7a45",am:"#9a6500",gBg:"#edfaf3",aBg:"#fff8e8",rBg:"#fef2f2"};
+function App(){
+const[nm,setNm]=useState("");const[rg,setRg]=useState(null);
+const[fa,setFa]=useState({});const[sa,setSa]=useState({});const[ya,setYa]=useState({});const[ca,setCa]=useState({});
+const[rp,setRp]=useState(null);const[st,setSt]=useState(0);
+const score=useCallback(()=>{
+let fS=0,eF=false;
+FIT.forEach(it=>{const v=fa[it.id];if(!v)return;let p=v;if(it.r)p=5-v;fS+=p;
+if(it.gate==="en"&&v>=3)eF=true;if(it.gate==="ep"&&v<=2)eF=true;});
+const fN=(fS/48)*60;
+let sR=0;SJT.forEach(s=>{const a=sa[s.id];if(a!==undefined)sR+=s.opts[a].p;});const sS=(sR/24)*25;
+const d={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+STY.forEach(s=>{const a=ya[s.id];if(!a)return;const[d1,d2]=s.d.split("");if(a==="a")d[d1]++;else d[d2]++;});
+const tp=`${d.E>=d.I?"E":"I"}${d.S>=d.N?"S":"N"}${d.T>=d.F?"T":"F"}${d.J>=d.P?"J":"P"}`;
+let yS=10;if(d.J>=2)yS+=2;if(d.E>=1)yS+=1;if(d.S>=1)yS+=1;if(d.T>=1)yS+=1;
+const res=((fa[7]||0)+(5-(fa[8]||3))+(fa[4]||0))/3;
+const eth=((fa[12]||0)+(5-(fa[6]||3)))/2;
+const disc=((fa[1]||0)+(fa[5]||0)+(5-(fa[2]||3)))/3;
+const rD={E:d.E,S:d.S,T:d.T,J:d.J,resilience:Math.min(res,4),ethics:Math.min(eth,4),discipline:Math.min(disc,4),learning:Math.min(fa[11]||0,4)};
+const fl=[];if(ca[2]>=3)fl.push("Tendência a resposta socialmente desejável");if(ca[1]>=4)fl.push("Possível resposta automática");
+const tot=Math.round(fN+sS+yS);
+const sem=eF?"REPROVADO (Ética)":tot>=75?"VERDE":tot>=60?"AMARELO":"VERMELHO";
+const cf=fl.length===0?"Alta":fl.length===1?"Média":"Baixa";
+const str=[];const rsk=[];
+if(fa[1]>=3)str.push("Disciplina comercial diária");if(fa[3]>=3)str.push("Follow-up consistente");
+if(fa[4]>=3)str.push("Persistência");if(fa[5]>=3)str.push("Gosta de processos");
+if(fa[7]>=3)str.push("Resiliência");if(fa[9]>=3)str.push("Calma sob pressão");
+if(fa[11]>=3)str.push("Aprendizagem rápida");if(fa[12]>=3)str.push("Ética");
+if(fa[2]>=3)rsk.push({r:"Adia contactos difíceis",m:"Role-play semanal"});
+if(fa[8]>=3)rsk.push({r:"Perde foco com cansaço",m:"Sprint 40' obrigatório"});
+if(fa[10]>=3)rsk.push({r:"Precisa de estrutura externa",m:"Checklist diário"});
+if(fa[6]>=3)rsk.push({r:"Flexível com regras",m:"Formação RGPD/IMPIC"});
+const sStr=[],sW=[];
+SJT.forEach(s=>{const a=sa[s.id];if(a!==undefined){if(s.opts[a].p===4)sStr.push(s.title);else if(s.opts[a].p===0)sW.push(s.title);}});
+const qs=["Conta-me o teu dia-a-dia nos últimos 30 dias.","Diz-me uma vez que te disseram 'não' e como reagiste."];
+if(rsk.find(r=>r.r.includes("regras")))qs.push("Como explicas a um cliente que não podes enviar docs por WhatsApp?");
+else if(rsk.find(r=>r.r.includes("cansaço")))qs.push("7 dias sem resultados. Qual é o teu plano?");
+else qs.push("O que é para ti um atalho que nunca farias?");
+const rec=eF?"NÃO AVANÇAR":tot>=75?"Entrevista + Shadow Day":tot>=60?"Entrevista (foco riscos)":"Não avançar";
+const tpDesc=(tp[0]==="E"?"Ganha energia com pessoas":"Recarrega sozinho")+" · "+(tp[1]==="S"?"Prático e concreto":"Intuitivo e visionário")+" · "+(tp[2]==="T"?"Decide pela lógica":"Decide pelas relações")+" · "+(tp[3]==="J"?"Gosta de planear":"Flexível e adaptável");
+return{nm,tot,fS:Math.round(fN),sS:Math.round(sS),yS,sem,cf,eF,tp,tpDesc,rD,str:str.slice(0,3),rsk:rsk.slice(0,2),sStr,sW,fl,qs,rec};
+},[nm,fa,sa,ya,ca]);
+const gen=()=>{setRp(score());setSt(5);};
+const lb=["Discordo","Discordo\num pouco","Concordo\num pouco","Concordo"];
+const ok=()=>{if(st===0)return nm&&rg==="s";if(st===1)return Object.keys(fa).length===12;if(st===2)return Object.keys(sa).length===6;if(st===3)return Object.keys(ya).length===8;if(st===4)return Object.keys(ca).length>=2;return true;};
+const w={background:C.wh,border:"1px solid "+C.bd,borderRadius:"6px",marginBottom:"14px",overflow:"hidden"};
+const hd={background:C.bl,padding:"10px 16px"};
+const ht=c=>({fontSize:"0.8rem",fontWeight:700,letterSpacing:"1.5px",textTransform:"uppercase",color:"#fff"});
+return React.createElement("div",{style:{minHeight:"100vh",background:C.bg}},
+// Header
+React.createElement("div",{style:{background:C.bl,color:"#fff",padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center"}},
+React.createElement("div",null,
+React.createElement("h1",{style:{margin:0,fontSize:"1rem",fontWeight:800,letterSpacing:"2px",textTransform:"uppercase"}},"FIT CONSULTOR IMOBILIÁRIO"),
+React.createElement("p",{style:{margin:"2px 0 0",fontSize:"0.7rem",opacity:0.6}},"PALCORE · v2.0")),
+React.createElement("div",{style:{display:"flex",gap:"6px"}},[0,1,2,3,4,5].map(s=>
+React.createElement("div",{key:s,style:{width:28,height:4,borderRadius:2,background:s<=st?"#fff":"rgba(255,255,255,0.2)"}})))),
+// Content
+React.createElement("div",{style:{maxWidth:700,margin:"0 auto",padding:16}},
+// Step 0
+st===0&&React.createElement("div",{style:w},
+React.createElement("div",{style:hd},React.createElement("span",{style:ht()},"Consentimento")),
+React.createElement("div",{style:{padding:20}},
+React.createElement("p",{style:{fontSize:"0.85rem",color:C.dm,lineHeight:1.6,marginBottom:16}},"Este teste demora ",React.createElement("b",null,"4 minutos"),". Avalia o teu ",React.createElement("b",null,"perfil operacional")," para consultor imobiliário."),
+React.createElement("div",{style:{padding:14,background:"#f0f0ff",borderRadius:6,border:"1px solid #d0d0ee",marginBottom:16}},
+React.createElement("p",{style:{fontSize:"0.82rem",color:C.tx,lineHeight:1.7,margin:0}},
+React.createElement("b",null,"O que vais encontrar:"),React.createElement("br",null),
+"· Secção 1 — Como te descreves no trabalho (1 a 4)",React.createElement("br",null),
+"· Secção 2 — Situações do dia-a-dia (escolha múltipla)",React.createElement("br",null),
+"· Secção 3 — O teu estilo pessoal (A ou B)",React.createElement("br",null),
+"· Secção 4 — Perguntas de confirmação",React.createElement("br",null),React.createElement("br",null),
+"No final recebes um ",React.createElement("b",null,"perfil de 4 letras")," (ex: ESTJ, INFP):",React.createElement("br",null),
+React.createElement("b",null,"E"),"xtrovertido ou ",React.createElement("b",null,"I"),"ntrovertido · prático (",React.createElement("b",null,"S"),") ou intuitivo (",React.createElement("b",null,"N"),") · lógico (",React.createElement("b",null,"T"),") ou relacional (",React.createElement("b",null,"F"),") · estruturado (",React.createElement("b",null,"J"),") ou flexível (",React.createElement("b",null,"P"),")",React.createElement("br",null),React.createElement("br",null),
+React.createElement("b",{style:{color:C.gn}},"Todos os perfis são bem-vindos.")," Não há perfil certo nem errado.")),
+React.createElement("div",{style:{marginBottom:16}},
+React.createElement("label",{style:{display:"block",fontSize:"0.75rem",fontWeight:700,color:C.bl,textTransform:"uppercase",letterSpacing:"1px",marginBottom:6}},"Nome"),
+React.createElement("input",{value:nm,onChange:e=>setNm(e.target.value),placeholder:"O teu nome",style:{width:"100%",padding:"10px 12px",border:"1px solid "+C.bd,borderRadius:4,fontSize:"0.88rem",boxSizing:"border-box"}})),
+React.createElement("div",{style:{padding:14,background:C.bg,borderRadius:6,border:"1px solid "+C.bd}},
+React.createElement("p",{style:{fontSize:"0.82rem",color:C.tx,marginBottom:10}},React.createElement("b",null,"RGPD:")," Autorizo o uso dos meus dados para este processo de recrutamento."),
+React.createElement("div",{style:{display:"flex",gap:8}},
+["s","n"].map(v=>React.createElement("button",{key:v,onClick:()=>setRg(v),style:{padding:"8px 24px",border:"2px solid "+(rg===v?(v==="s"?C.gn:C.rd):C.bd),background:rg===v?(v==="s"?C.gBg:C.rBg):C.wh,color:rg===v?(v==="s"?C.gn:C.rd):C.dm,borderRadius:4,fontWeight:700,cursor:"pointer",fontSize:"0.85rem"}},v==="s"?"Sim":"Não")))))),
+// Step 1
+st===1&&React.createElement("div",{style:w},
+React.createElement("div",{style:hd},React.createElement("span",{style:ht()},"O teu perfil")),
+FIT.map(it=>React.createElement("div",{key:it.id,style:{padding:"12px 16px",borderBottom:"1px solid "+C.bd}},
+React.createElement("div",{style:{fontSize:"0.88rem",color:C.tx,lineHeight:1.5,marginBottom:10}},
+React.createElement("b",{style:{color:C.dm,marginRight:6}},it.id+"."),it.text),
+React.createElement("div",{style:{display:"flex",gap:6}},
+[1,2,3,4].map(n=>React.createElement("button",{key:n,onClick:()=>setFa(p=>({...p,[it.id]:n})),style:{flex:1,padding:"8px 4px",borderRadius:6,border:"2px solid "+(fa[it.id]===n?C.bl:C.bd),background:fa[it.id]===n?"#f0f0ff":C.wh,color:fa[it.id]===n?C.bl:C.dm,fontSize:"0.7rem",fontWeight:fa[it.id]===n?700:400,cursor:"pointer",textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line"}},lb[n-1])))))),
+// Step 2
+st===2&&React.createElement("div",null,SJT.map(s=>React.createElement("div",{key:s.id,style:w},
+React.createElement("div",{style:hd},React.createElement("span",{style:{color:"#fff",fontSize:"0.8rem",fontWeight:700}},"Cenário "+s.id+": "+s.title)),
+React.createElement("div",{style:{padding:"12px 16px"}},s.opts.map((o,i)=>React.createElement("button",{key:i,onClick:()=>setSa(p=>({...p,[s.id]:i})),style:{display:"block",width:"100%",textAlign:"left",padding:"10px 14px",marginBottom:6,border:"2px solid "+(sa[s.id]===i?C.bl:C.bd),background:sa[s.id]===i?"#f0f0ff":C.wh,borderRadius:6,cursor:"pointer",fontSize:"0.85rem",color:C.tx,lineHeight:1.5}},React.createElement("b",{style:{color:sa[s.id]===i?C.bl:C.dm,marginRight:8}},o.l+")"),o.t)))))),
+// Step 3
+st===3&&React.createElement("div",{style:w},
+React.createElement("div",{style:hd},React.createElement("span",{style:ht()},"O teu estilo — A ou B")),
+STY.map(s=>React.createElement("div",{key:s.id,style:{padding:"12px 16px",borderBottom:"1px solid "+C.bd}},
+React.createElement("div",{style:{display:"flex",gap:8}},
+["a","b"].map(v=>React.createElement("button",{key:v,onClick:()=>setYa(p=>({...p,[s.id]:v})),style:{flex:1,padding:"12px 14px",textAlign:"left",border:"2px solid "+(ya[s.id]===v?C.bl:C.bd),background:ya[s.id]===v?"#f0f0ff":C.wh,borderRadius:6,cursor:"pointer",fontSize:"0.82rem",color:C.tx,lineHeight:1.4}},React.createElement("b",{style:{color:ya[s.id]===v?C.bl:C.dm}},v.toUpperCase()+") "),s[v])))))),
+// Step 4
+st===4&&React.createElement("div",{style:w},
+React.createElement("div",{style:hd},React.createElement("span",{style:ht()},"Últimas perguntas")),
+CON.filter(c=>c.tp==="s").map(c=>React.createElement("div",{key:c.id,style:{padding:"12px 16px",borderBottom:"1px solid "+C.bd}},
+React.createElement("div",{style:{fontSize:"0.88rem",color:C.tx,lineHeight:1.5,marginBottom:10}},React.createElement("b",{style:{color:C.dm,marginRight:6}},c.id+"."),c.text),
+React.createElement("div",{style:{display:"flex",gap:6}},[1,2,3,4].map(n=>React.createElement("button",{key:n,onClick:()=>setCa(p=>({...p,[c.id]:n})),style:{flex:1,padding:"8px 4px",borderRadius:6,border:"2px solid "+(ca[c.id]===n?C.bl:C.bd),background:ca[c.id]===n?"#f0f0ff":C.wh,color:ca[c.id]===n?C.bl:C.dm,fontSize:"0.7rem",fontWeight:ca[c.id]===n?700:400,cursor:"pointer",textAlign:"center",lineHeight:1.3,whiteSpace:"pre-line"}},lb[n-1]))))),
+CON.filter(c=>c.tp==="ab").map(c=>React.createElement("div",{key:c.id,style:{padding:"12px 16px",borderBottom:"1px solid "+C.bd}},
+React.createElement("div",{style:{display:"flex",gap:8}},["a","b"].map(v=>React.createElement("button",{key:v,onClick:()=>setCa(p=>({...p,[c.id]:v})),style:{flex:1,padding:12,textAlign:"left",border:"2px solid "+(ca[c.id]===v?C.bl:C.bd),background:ca[c.id]===v?"#f0f0ff":C.wh,borderRadius:6,cursor:"pointer",fontSize:"0.82rem",color:C.tx}},React.createElement("b",{style:{color:C.dm}},v.toUpperCase()+") "),c[v])))))),
+// Step 5 Report
+st===5&&rp&&React.createElement("div",{style:{...w,border:"2px solid "+(rp.sem.includes("VERDE")?C.gn:rp.sem.includes("AMARELO")?C.am:C.rd)}},
+React.createElement("div",{style:{background:rp.sem.includes("VERDE")?C.gn:rp.sem.includes("AMARELO")?C.am:C.rd,padding:"16px 20px",color:"#fff"}},
+React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},
+React.createElement("div",null,
+React.createElement("div",{style:{fontSize:"1rem",fontWeight:800,letterSpacing:"2px",textTransform:"uppercase"}},"FIT CONSULTOR IMOBILIÁRIO"),
+React.createElement("div",{style:{fontSize:"0.75rem",opacity:0.8,marginTop:4}},rp.nm+" · "+new Date().toLocaleDateString("pt-PT"))),
+React.createElement("div",{style:{display:"flex",gap:6},className:"no-print"},
+React.createElement("button",{onClick:()=>window.print(),style:{padding:"6px 12px",background:"rgba(255,255,255,0.2)",color:"#fff",border:"1px solid rgba(255,255,255,0.4)",borderRadius:4,fontSize:"0.7rem",fontWeight:700,cursor:"pointer"}},"PDF"),
+React.createElement("button",{onClick:()=>{const b="FIT CONSULTOR — Resultado%0A%0ACandidato: "+rp.nm+"%0AScore: "+rp.tot+"/100%0ASemáforo: "+rp.sem+"%0ATipo: "+rp.tp+"-ish%0A%0AForças: "+rp.str.join(", ")+"%0ARiscos: "+rp.rsk.map(r=>r.r).join(", ")+"%0A%0ARecomendação: "+rp.rec;window.open("mailto:?subject=FIT Consultor — "+rp.nm+"&body="+b,"_blank");},style:{padding:"6px 12px",background:"rgba(255,255,255,0.2)",color:"#fff",border:"1px solid rgba(255,255,255,0.4)",borderRadius:4,fontSize:"0.7rem",fontWeight:700,cursor:"pointer"}},"EMAIL")))),
+React.createElement("div",{style:{padding:20}},
+// Score bar
+React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16,paddingBottom:16,borderBottom:"1px solid "+C.bd}},
+React.createElement("div",null,React.createElement("div",{style:{fontSize:"2rem",fontWeight:900,color:C.tx}},rp.tot,React.createElement("span",{style:{fontSize:"1rem",color:C.dm}},"/100")),React.createElement("div",{style:{fontSize:"0.75rem",color:C.dm}},"Score Global")),
+React.createElement("div",{style:{textAlign:"center"}},React.createElement("div",{style:{fontSize:"0.85rem",fontWeight:800,padding:"6px 16px",borderRadius:20,color:rp.sem.includes("VERDE")?C.gn:rp.sem.includes("AMARELO")?C.am:C.rd,background:rp.sem.includes("VERDE")?C.gBg:rp.sem.includes("AMARELO")?C.aBg:C.rBg}},rp.sem),React.createElement("div",{style:{fontSize:"0.7rem",color:C.dm,marginTop:4}},"Confiança: "+rp.cf)),
+React.createElement("div",{style:{textAlign:"right",fontSize:"0.75rem",color:C.dm}},React.createElement("div",null,"Fit: "+rp.fS+"/60"),React.createElement("div",null,"SJT: "+rp.sS+"/25"),React.createElement("div",null,"Style: "+rp.yS+"/15"))),
+// Ethics gate
+rp.eF&&React.createElement("div",{style:{padding:12,background:C.rBg,borderLeft:"4px solid "+C.rd,borderRadius:4,marginBottom:16}},React.createElement("b",{style:{color:C.rd}},"GATE ÉTICO: REPROVAÇÃO AUTOMÁTICA")),
+// Radar
+React.createElement("div",{style:{marginBottom:16,textAlign:"center"}},
+React.createElement("div",{style:{fontSize:"0.72rem",fontWeight:700,color:C.bl,textTransform:"uppercase",letterSpacing:"1px",marginBottom:8}},"Perfil — Radar"),
+React.createElement(Radar,{dims:rp.rD}),
+React.createElement("div",{style:{fontSize:"1.1rem",fontWeight:800,color:C.bl,marginTop:8}},rp.tp+"-ish"),
+React.createElement("div",{style:{fontSize:"0.72rem",color:C.dm,marginTop:6}},rp.tpDesc)),
+// Strengths
+React.createElement("div",{style:{marginBottom:16}},
+React.createElement("div",{style:{fontSize:"0.72rem",fontWeight:700,color:C.gn,textTransform:"uppercase",letterSpacing:"1px",marginBottom:8}},"Forças (Top 3)"),
+rp.str.length>0?rp.str.map((s,i)=>React.createElement("div",{key:i,style:{fontSize:"0.85rem",color:C.tx,padding:"3px 0"}},"+ "+s)):React.createElement("div",{style:{fontSize:"0.82rem",color:C.dm}},"Sem forças destacadas")),
+// Risks
+React.createElement("div",{style:{marginBottom:16}},
+React.createElement("div",{style:{fontSize:"0.72rem",fontWeight:700,color:C.rd,textTransform:"uppercase",letterSpacing:"1px",marginBottom:8}},"Riscos + Mitigação"),
+rp.rsk.length>0?rp.rsk.map((r,i)=>React.createElement("div",{key:i,style:{fontSize:"0.82rem",color:C.tx,padding:"3px 0",lineHeight:1.5}},"! "+r.r+" → ",React.createElement("i",{style:{color:C.dm}},r.m))):React.createElement("div",{style:{fontSize:"0.82rem",color:C.dm}},"Sem riscos significativos")),
+// SJT
+React.createElement("div",{style:{marginBottom:16}},
+React.createElement("div",{style:{fontSize:"0.72rem",fontWeight:700,color:C.bl,textTransform:"uppercase",letterSpacing:"1px",marginBottom:8}},"Julgamento Situacional"),
+rp.sStr.length>0&&React.createElement("div",{style:{fontSize:"0.82rem",color:C.gn}},"Forte: "+rp.sStr.join(", ")),
+rp.sW.length>0&&React.createElement("div",{style:{fontSize:"0.82rem",color:C.rd,marginTop:4}},"A melhorar: "+rp.sW.join(", "))),
+// Flags
+rp.fl.length>0&&React.createElement("div",{style:{marginBottom:16,padding:10,background:C.aBg,borderLeft:"3px solid "+C.am,borderRadius:4}},
+React.createElement("div",{style:{fontSize:"0.72rem",fontWeight:700,color:C.am}},"FLAGS"),
+rp.fl.map((f,i)=>React.createElement("div",{key:i,style:{fontSize:"0.82rem",color:C.am}},f))),
+// Recommendation
+React.createElement("div",{style:{padding:14,background:C.bg,borderRadius:6,marginBottom:16}},
+React.createElement("div",{style:{fontSize:"0.72rem",fontWeight:700,color:C.tx,textTransform:"uppercase",letterSpacing:"1px",marginBottom:6}},"Recomendação"),
+React.createElement("div",{style:{fontSize:"1rem",fontWeight:800,color:rp.rec.includes("Shadow")?C.gn:rp.rec.includes("foco")?C.am:C.rd}},rp.rec)),
+// Interview
+React.createElement("div",null,
+React.createElement("div",{style:{fontSize:"0.72rem",fontWeight:700,color:C.tx,textTransform:"uppercase",letterSpacing:"1px",marginBottom:8}},"Perguntas para entrevista"),
+rp.qs.map((q,i)=>React.createElement("div",{key:i,style:{fontSize:"0.82rem",color:C.tx,padding:"3px 0"}},(i+1)+". "+q)))),
+React.createElement("div",{style:{background:C.bl,padding:"10px 16px",fontSize:"0.6rem",color:"rgba(255,255,255,0.5)",textAlign:"center"}},"PALCORE · FIT Consultor Imobiliário v2.0")),
+// Nav buttons
+st<5&&React.createElement("button",{onClick:()=>{if(st===4)gen();else setSt(s=>s+1)},disabled:!ok(),style:{width:"100%",padding:14,marginTop:4,background:ok()?(st===4?C.gn:C.rd):C.dm,color:"#fff",border:"none",borderRadius:6,fontSize:"0.9rem",fontWeight:800,letterSpacing:"2px",textTransform:"uppercase",cursor:ok()?"pointer":"not-allowed"}},st===4?"GERAR RELATÓRIO":st===0?"COMEÇAR":"SEGUINTE →"),
+st>0&&st<5&&React.createElement("button",{onClick:()=>setSt(s=>s-1),style:{width:"100%",padding:10,marginTop:6,background:"transparent",color:C.dm,border:"1px solid "+C.bd,borderRadius:6,fontSize:"0.8rem",cursor:"pointer"}},"← Voltar")
+));
+}
+ReactDOM.render(React.createElement(App),document.getElementById("root"));
+</script></body></html>
