@@ -165,7 +165,7 @@ h+='</table></div>';
 }
 if(STEP===1){
 h+='<div class="cd"><div class="tl">'+(P==="pt"?"HOJE":"TODAY")+'</div>';
-var v1o=p?["Ganhar mais do que agora","Construir carteira de clientes","Mudar de vida","Ainda não sei"]:["Earn more than now","Build a client portfolio","Change my life","Not sure yet"];
+var v1o=P==="pt"?["Ganhar mais do que agora","Construir carteira de clientes","Mudar de vida","Ainda não sei"]:["Earn more than now","Build a client portfolio","Change my life","Not sure yet"];
 v1o.forEach(function(o,i){h+='<div class="vob'+(pV1===i+1?" on":"")+'" data-pv1="'+(i+1)+'">'+o+'</div>'});
 h+='</div>';
 h+='<div class="cd"><div class="tl">'+(P==="pt"?"DAQUI A 3 ANOS":"IN 3 YEARS")+'</div>';
@@ -184,7 +184,7 @@ h+='<div style="display:flex;gap:4px;margin-top:8px">';
 h+='</div></div>';
 if(pDesired>0){
 var tgy=n2g(pDesired*12),agNeed=tgy/.30;
-h+='<div class="cd"><div class="tl">'+(P==="pt"?"PARA GANHAR ":"TO EARN ")+fmt(pDesired)+(P==="pt?"/MÊS":"/MO")+'</div>';
+h+='<div class="cd"><div class="tl">'+(P==="pt"?"PARA GANHAR ":"TO EARN ")+fmt(pDesired)+(P==="pt"?"/MÊS":"/MO")+'</div>';
 h+='<div class="rw"><span class="rl">'+(P==="pt"?"Bruto necessário":"Gross needed")+'</span><span class="rv">'+fmt(tgy)+'/'+(P==="pt"?"ano":"yr")+'</span></div>';
 h+='<div class="rw"><span class="rl">'+(P==="pt"?"Agência precisa de":"Agency needs")+'</span><span class="rv" style="color:var(--gd)">'+fK(agNeed)+'/'+(P==="pt"?"ano":"yr")+'</span></div>';
 }
