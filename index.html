@@ -1,1000 +1,481 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PACT">
-    <title>PACT by PALCORE — V-A Skool Demo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --navy: #0A1628;
-            --red: #C41230;
-            --blue: #1A3A5C;
-            --gold: #D4AF37;
-            --white: #F5F5F7;
-            --gray-light: #F0F0F2;
-            --gray-mid: #E5E5E7;
-            --gray-dark: #8E8E93;
-            --success: #34C759;
-            --warning: #FF9500;
-            --danger: #FF3B30;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--white);
-            color: var(--navy);
-            overflow: hidden;
-            height: 100vh;
-            position: fixed;
-            width: 100%;
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* SPLASH SCREEN */
-        .splash {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.6s ease-out;
-        }
-
-        .splash.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .splash-content {
-            text-align: center;
-            color: white;
-        }
-
-        .splash-eagle {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .splash-subtitle {
-            font-size: 0.9rem;
-            color: var(--gold);
-            letter-spacing: 0.15em;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-        }
-
-        .splash-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .splash-desc {
-            font-size: 1rem;
-            color: var(--gray-light);
-            margin-bottom: 2rem;
-            max-width: 90%;
-        }
-
-        .splash-btn {
-            background: var(--red);
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .splash-btn:active {
-            transform: scale(0.95);
-            opacity: 0.9;
-        }
-
-        /* APP SHELL */
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            opacity: 0;
-            transition: opacity 0.6s ease-in 0.2s;
-        }
-
-        .app-container.visible {
-            opacity: 1;
-        }
-
-        header {
-            background: var(--navy);
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--red);
-            padding-top: max(1rem, env(safe-area-inset-top));
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-        }
-
-        .logo-accent {
-            color: var(--red);
-        }
-
-        .time-display {
-            font-size: 0.8rem;
-            color: var(--gray-light);
-            margin-left: 0.5rem;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .pact-score {
-            background: var(--red);
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .lang-toggle {
-            background: var(--blue);
-            border: none;
-            color: white;
-            padding: 0.4rem 0.8rem;
-            border-radius: 0.25rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .lang-toggle:active {
-            opacity: 0.8;
-        }
-
-        /* CONTENT AREA */
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 1.5rem 1rem;
-            padding-bottom: 5rem;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* MODULES */
-        .module {
-            display: none;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        .module.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .module-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            color: var(--navy);
-        }
-
-        .tab-nav {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid var(--gray-mid);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 0.75rem 1rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--gray-dark);
-            cursor: pointer;
-            white-space: nowrap;
-            position: relative;
-            transition: color 0.3s;
-        }
-
-        .tab-btn.active {
-            color: var(--red);
-        }
-
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--red);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* FORM ELEMENTS */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--navy);
-            font-size: 0.95rem;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--gray-mid);
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--red);
-            box-shadow: 0 0 0 3px rgba(196, 18, 48, 0.1);
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--gray-mid);
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--red);
-            cursor: pointer;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--red);
-            cursor: pointer;
-            border: none;
-        }
-
-        /* BUTTONS */
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            background: var(--red);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            width: 100%;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-
-        .btn-secondary {
-            background: var(--blue);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .btn-group .btn {
-            flex: 1;
-        }
-
-        /* CARDS */
-        .card {
-            background: white;
-            border: 1px solid var(--gray-mid);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-title {
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--navy);
-        }
-
-        .card-subtitle {
-            font-size: 0.85rem;
-            color: var(--gray-dark);
-        }
-
-        /* STATS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .stat-box {
-            background: var(--gray-light);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--red);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--gray-dark);
-        }
-
-        /* NAVIGATION */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 2px solid var(--gray-mid);
-            display: flex;
-            justify-content: space-around;
-            padding-bottom: env(safe-area-inset-bottom);
-            z-index: 100;
-        }
-
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem;
-            font-size: 0.75rem;
-            color: var(--gray-dark);
-            border: none;
-            background: none;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .nav-item.active {
-            color: var(--red);
-            font-weight: 700;
-        }
-
-        .nav-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.25rem;
-        }
-
-        /* STATUS INDICATORS */
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background: rgba(52, 199, 89, 0.1);
-            color: var(--success);
-        }
-
-        .badge-warning {
-            background: rgba(255, 149, 0, 0.1);
-            color: var(--warning);
-        }
-
-        .badge-danger {
-            background: rgba(255, 59, 48, 0.1);
-            color: var(--danger);
-        }
-
-        /* ALERTS */
-        .alert {
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid;
-        }
-
-        .alert-success {
-            background: rgba(52, 199, 89, 0.1);
-            border-color: var(--success);
-            color: var(--success);
-        }
-
-        .alert-warning {
-            background: rgba(255, 149, 0, 0.1);
-            border-color: var(--warning);
-            color: var(--warning);
-        }
-
-        .alert-danger {
-            background: rgba(255, 59, 48, 0.1);
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--gray-mid);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--gray-dark);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 480px) {
-            .module-title {
-                font-size: 1.4rem;
-            }
-
-            .splash-title {
-                font-size: 1.8rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-group {
-                flex-direction: column;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACT — Dashboard Consultor</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0c1a14; --surface: #122019; --surface2: #1a2e24;
+  --border: #2a4a3a; --accent: #0F6E56; --accent-light: #14956f;
+  --gold: #c49a1a; --gold-light: #d7be88;
+  --success: #22c55e; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
+  --text: #e4e4e7; --dim: #8a9a90; --white: #ffffff;
+  --era-red: #cc0000;
+  --stage-qual: #3b82f6; --stage-vis: #8b5cf6; --stage-ofe: #f59e0b;
+  --stage-cpcv: #ec4899; --stage-cred: #06b6d4; --stage-esc: #22c55e;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,-apple-system,sans-serif; min-height:100vh; }
+
+/* Auth Screen */
+.auth-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
+.auth-box { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:48px 40px; max-width:400px; width:100%; text-align:center; }
+.auth-box h1 { font-size:28px; font-weight:700; margin-bottom:4px; }
+.auth-box .subtitle { color:var(--dim); font-size:14px; margin-bottom:32px; }
+.auth-box input { width:100%; padding:14px 16px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:16px; outline:none; margin-bottom:16px; }
+.auth-box input:focus { border-color:var(--accent); }
+.auth-box button { width:100%; padding:14px; background:var(--accent); color:white; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; transition:background .2s; }
+.auth-box button:hover { background:var(--accent-light); }
+.auth-error { color:var(--error); font-size:13px; margin-bottom:12px; display:none; }
+
+/* App */
+.app { display:none; }
+.topbar { background:var(--surface); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; }
+.topbar-left { display:flex; align-items:center; gap:12px; }
+.topbar-left h1 { font-size:20px; font-weight:700; }
+.topbar-left h1 span { color:var(--accent); }
+.topbar-right { display:flex; align-items:center; gap:16px; }
+.consultant-name { font-size:14px; color:var(--dim); }
+.consultant-name strong { color:var(--text); }
+.btn-logout { background:none; border:1px solid var(--border); color:var(--dim); padding:6px 14px; border-radius:8px; cursor:pointer; font-size:13px; }
+.btn-logout:hover { border-color:var(--error); color:var(--error); }
+
+.container { max-width:1280px; margin:0 auto; padding:24px; }
+
+/* KPI Row */
+.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.kpi { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; }
+.kpi-label { font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.kpi-value { font-size:32px; font-weight:700; }
+.kpi-sub { font-size:12px; color:var(--dim); margin-top:4px; }
+
+/* Client Cards */
+.section-title { font-size:18px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.section-title .count { background:var(--surface2); color:var(--dim); padding:2px 10px; border-radius:12px; font-size:13px; }
+
+.client-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:16px; margin-bottom:32px; }
+.client-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s; }
+.client-card:hover { border-color:var(--accent); }
+.client-header { padding:16px 20px 12px; display:flex; justify-content:space-between; align-items:flex-start; }
+.client-name { font-size:16px; font-weight:600; }
+.client-score { padding:4px 10px; border-radius:8px; font-size:13px; font-weight:600; }
+.score-pronto { background:rgba(34,197,94,.15); color:var(--success); }
+.score-quase { background:rgba(245,158,11,.15); color:var(--warning); }
+.score-preparar { background:rgba(59,130,246,.15); color:var(--info); }
+.score-frio { background:rgba(113,113,122,.15); color:var(--dim); }
+
+.client-details { padding:0 20px; font-size:13px; color:var(--dim); }
+.client-details .row { display:flex; justify-content:space-between; margin-bottom:6px; }
+.client-details .value { color:var(--text); }
+
+/* Pipeline Progress */
+.pipeline-bar-container { padding:12px 20px 16px; }
+.pipeline-label { font-size:12px; color:var(--dim); margin-bottom:6px; display:flex; justify-content:space-between; }
+.pipeline-bar { height:8px; background:var(--surface2); border-radius:4px; overflow:hidden; }
+.pipeline-fill { height:100%; border-radius:4px; transition:width .6s ease; }
+
+/* Tasks */
+.tasks-section { padding:0 20px 16px; }
+.tasks-title { font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.task-item { display:flex; align-items:center; gap:8px; padding:4px 0; font-size:13px; }
+.task-check { width:16px; height:16px; border-radius:4px; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.task-check.done { background:var(--accent); border-color:var(--accent); }
+.task-check.done::after { content:'✓'; color:white; font-size:10px; }
+.task-text { color:var(--dim); }
+.task-text.done { color:var(--text); text-decoration:line-through; opacity:.6; }
+
+/* Visits */
+.visit-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin-bottom:12px; }
+.visit-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.visit-status { padding:3px 10px; border-radius:6px; font-size:12px; font-weight:600; }
+.vs-done { background:rgba(34,197,94,.15); color:var(--success); }
+.vs-confirmed { background:rgba(59,130,246,.15); color:var(--info); }
+.vs-proposed { background:rgba(245,158,11,.15); color:var(--warning); }
+.vs-cancelled { background:rgba(239,68,68,.15); color:var(--error); }
+.visit-details { font-size:13px; color:var(--dim); }
+.visit-details strong { color:var(--text); }
+.visit-rating { margin-top:8px; font-size:13px; }
+
+/* Funnel Chart */
+.chart-container { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:24px; }
+
+/* Responsive */
+@media(max-width:900px) { .kpi-row { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:600px) {
+  .kpi-row { grid-template-columns:1fr; }
+  .client-grid { grid-template-columns:1fr; }
+  .topbar { flex-direction:column; gap:12px; }
+}
+</style>
 </head>
 <body>
-    <!-- SPLASH SCREEN -->
-    <div class="splash" id="splash">
-        <div class="splash-content">
-            <div class="splash-eagle">🦅</div>
-            <div class="splash-subtitle">PACT by PALCORE</div>
-            <div class="splash-title">V-A</div>
-            <div class="splash-desc">Skool Demo — 22 Modules, 8 Functional</div>
-            <button class="splash-btn" onclick="startApp()">Enter PACT</button>
-        </div>
+
+<!-- AUTH SCREEN -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-box">
+    <h1>PACT</h1>
+    <div class="subtitle">Equipa ALATUS — ERA Porto Baixa</div>
+    <div class="auth-error" id="authError">Password incorrecta</div>
+    <input type="password" id="pwdInput" placeholder="Password da equipa" autofocus>
+    <select id="consultantSelect" style="width:100%;padding:14px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;margin-bottom:16px;outline:none;">
+      <option value="">Selecciona o teu nome...</option>
+    </select>
+    <button onclick="doLogin()">Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1><span>PACT</span> Dashboard</h1>
     </div>
-
-    <!-- APP SHELL -->
-    <div class="app-container" id="appContainer">
-        <header>
-            <div class="header-left">
-                <div class="logo">PAC<span class="logo-accent">T</span></div>
-                <div class="time-display" id="timeDisplay">00:00</div>
-            </div>
-            <div class="header-right">
-                <div class="pact-score" id="pactScore">8/22</div>
-                <button class="lang-toggle" id="langToggle">EN</button>
-            </div>
-        </header>
-
-        <div class="content" id="content">
-            <!-- MODULE 1: HOME -->
-            <div class="module active" id="module-1">
-                <div class="module-title">Welcome to PACT</div>
-                <div class="card">
-                    <div class="card-title">System Status</div>
-                    <div class="card-subtitle">All modules operational</div>
-                    <div style="margin-top: 1rem;">
-                        <span class="badge badge-success">8 Functional</span>
-                        <span class="badge badge-warning">14 Planned</span>
-                    </div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-value">8</div>
-                        <div class="stat-label">Active Modules</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value">22</div>
-                        <div class="stat-label">Total Design</div>
-                    </div>
-                </div>
-
-                <div class="alert alert-success">
-                    Demo version shows 8 functional modules with full navigation. Production release will complete all 22 modules.
-                </div>
-
-                <button class="btn" onclick="navigateToModule(2)">Explore Modules</button>
-            </div>
-
-            <!-- MODULE 2: DISCOVERY -->
-            <div class="module" id="module-2">
-                <div class="module-title">Discovery Engine</div>
-                <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchTab(this, 'discover-1')">Market</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'discover-2')">Leads</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'discover-3')">Insights</button>
-                </div>
-                <div class="tab-content active" id="discover-1">
-                    <div class="form-group">
-                        <label>Market Segment</label>
-                        <select>
-                            <option>Residential</option>
-                            <option>Commercial</option>
-                            <option>Industrial</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Price Range (EUR)</label>
-                        <input type="text" placeholder="e.g. 100000-500000">
-                    </div>
-                    <button class="btn" onclick="showAlert('Searching market...', 'success')">Search Market</button>
-                </div>
-                <div class="tab-content" id="discover-2">
-                    <div class="card">
-                        <div class="card-title">Lead Sources</div>
-                        <div class="card-subtitle">Multiple integration points</div>
-                        <ul style="margin-top: 1rem; padding-left: 1.5rem;">
-                            <li>LinkedIn Scraper</li>
-                            <li>Email Finder API</li>
-                            <li>Market Database</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tab-content" id="discover-3">
-                    <div class="card">
-                        <div class="card-title">Insights Module</div>
-                        <div class="card-subtitle">Market trends & analytics</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODULE 3: ENGAGEMENT -->
-            <div class="module" id="module-3">
-                <div class="module-title">Engagement Hub</div>
-                <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchTab(this, 'engage-1')">Campaigns</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'engage-2')">Messages</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'engage-3')">Automation</button>
-                </div>
-                <div class="tab-content active" id="engage-1">
-                    <div class="form-group">
-                        <label>Campaign Name</label>
-                        <input type="text" placeholder="e.g. Spring Outreach 2026">
-                    </div>
-                    <div class="form-group">
-                        <label>Target Audience</label>
-                        <select>
-                            <option>Investors</option>
-                            <option>Sellers</option>
-                            <option>Buyers</option>
-                        </select>
-                    </div>
-                    <button class="btn" onclick="showAlert('Campaign created', 'success')">Create Campaign</button>
-                </div>
-                <div class="tab-content" id="engage-2">
-                    <div class="card">
-                        <div class="card-title">Message Templates</div>
-                        <div class="card-subtitle">Personalized outreach at scale</div>
-                    </div>
-                </div>
-                <div class="tab-content" id="engage-3">
-                    <div class="card">
-                        <div class="card-title">Automation Rules</div>
-                        <div class="card-subtitle">Workflow orchestration</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODULE 4: INTELLIGENCE -->
-            <div class="module" id="module-4">
-                <div class="module-title">Intelligence Platform</div>
-                <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchTab(this, 'intel-1')">Analytics</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'intel-2')">Scoring</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'intel-3')">Reporting</button>
-                </div>
-                <div class="tab-content active" id="intel-1">
-                    <div class="stats-grid">
-                        <div class="stat-box">
-                            <div class="stat-value">2.4K</div>
-                            <div class="stat-label">Contacts</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value">48%</div>
-                            <div class="stat-label">Engagement</div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">Conversion Funnel</div>
-                        <div class="card-subtitle">Real-time tracking</div>
-                    </div>
-                </div>
-                <div class="tab-content" id="intel-2">
-                    <div class="form-group">
-                        <label>Lead Score Threshold</label>
-                        <input type="range" min="0" max="100" value="50">
-                        <small style="color: var(--gray-dark);">50/100</small>
-                    </div>
-                    <button class="btn btn-secondary" onclick="showAlert('Scoring applied', 'success')">Apply Scoring</button>
-                </div>
-                <div class="tab-content" id="intel-3">
-                    <div class="card">
-                        <div class="card-title">Report Generator</div>
-                        <div class="card-subtitle">Custom dashboards & exports</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODULE 5: COLLABORATION -->
-            <div class="module" id="module-5">
-                <div class="module-title">Collaboration Space</div>
-                <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchTab(this, 'collab-1')">Team</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'collab-2')">Notes</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'collab-3')">Sync</button>
-                </div>
-                <div class="tab-content active" id="collab-1">
-                    <div class="card">
-                        <div class="card-title">Team Members</div>
-                        <div class="card-subtitle">7 Consultants (ALATUS)</div>
-                        <ul style="margin-top: 1rem; padding-left: 1.5rem;">
-                            <li>DAN (Lead)</li>
-                            <li>LEO</li>
-                            <li>AND</li>
-                            <li>JOA</li>
-                            <li>JOR</li>
-                            <li>ALE</li>
-                            <li>PAU</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="tab-content" id="collab-2">
-                    <div class="form-group">
-                        <label>Add Team Note</label>
-                        <textarea style="width:100%; padding:0.75rem; border:1px solid var(--gray-mid); border-radius:0.5rem; min-height:100px; font-family:inherit;" placeholder="Shared observations..."></textarea>
-                    </div>
-                    <button class="btn" onclick="showAlert('Note saved to team', 'success')">Save Note</button>
-                </div>
-                <div class="tab-content" id="collab-3">
-                    <div class="card">
-                        <div class="card-title">Real-time Sync</div>
-                        <div class="card-subtitle">All changes propagate instantly</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODULE 6: TRANSACTIONS -->
-            <div class="module" id="module-6">
-                <div class="module-title">Transaction Manager</div>
-                <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchTab(this, 'trans-1')">Pipeline</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'trans-2')">Deals</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'trans-3')">Docs</button>
-                </div>
-                <div class="tab-content active" id="trans-1">
-                    <div class="stats-grid">
-                        <div class="stat-box">
-                            <div class="stat-value">12</div>
-                            <div class="stat-label">Open</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-value">5</div>
-                            <div class="stat-label">Closing</div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">Deal Pipeline</div>
-                        <div class="card-subtitle">Opportunities by stage</div>
-                    </div>
-                </div>
-                <div class="tab-content" id="trans-2">
-                    <div class="form-group">
-                        <label>Deal Identifier</label>
-                        <input type="text" placeholder="e.g. DEAL-2026-001">
-                    </div>
-                    <div class="form-group">
-                        <label>Deal Value (EUR)</label>
-                        <input type="number" placeholder="0.00">
-                    </div>
-                    <button class="btn" onclick="showAlert('Deal created', 'success')">Create Deal</button>
-                </div>
-                <div class="tab-content" id="trans-3">
-                    <div class="card">
-                        <div class="card-title">Document Center</div>
-                        <div class="card-subtitle">Contracts, agreements, templates</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODULE 7: MARKETPLACE -->
-            <div class="module" id="module-7">
-                <div class="module-title">Marketplace</div>
-                <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchTab(this, 'market-1')">Listings</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'market-2')">Portfolio</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'market-3')">Syndication</button>
-                </div>
-                <div class="tab-content active" id="market-1">
-                    <div class="form-group">
-                        <label>Filter by Status</label>
-                        <select>
-                            <option>All Listings</option>
-                            <option>Active</option>
-                            <option>Sold</option>
-                            <option>Draft</option>
-                        </select>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">Featured Properties</div>
-                        <div class="card-subtitle">Premium marketplace listings</div>
-                    </div>
-                </div>
-                <div class="tab-content" id="market-2">
-                    <div class="card">
-                        <div class="card-title">Agency Portfolio</div>
-                        <div class="card-subtitle">ERA Porto Baixa/Centro showcase</div>
-                    </div>
-                </div>
-                <div class="tab-content" id="market-3">
-                    <div class="card">
-                        <div class="card-title">Multi-Network Syndication</div>
-                        <div class="card-subtitle">Properties listed across networks</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MODULE 8: SETTINGS -->
-            <div class="module" id="module-8">
-                <div class="module-title">Settings & Config</div>
-                <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchTab(this, 'settings-1')">Account</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'settings-2')">Integrations</button>
-                    <button class="tab-btn" onclick="switchTab(this, 'settings-3')">Admin</button>
-                </div>
-                <div class="tab-content active" id="settings-1">
-                    <div class="form-group">
-                        <label>Display Name</label>
-                        <input type="text" value="Paulo Branco">
-                    </div>
-                    <div class="form-group">
-                        <label>Email Preference</label>
-                        <select>
-                            <option>All notifications</option>
-                            <option>Important only</option>
-                            <option>Never</option>
-                        </select>
-                    </div>
-                    <button class="btn" onclick="showAlert('Settings saved', 'success')">Save Settings</button>
-                </div>
-                <div class="tab-content" id="settings-2">
-                    <div class="card">
-                        <div class="card-title">Connected Services</div>
-                        <div class="card-subtitle">Gmail, Slack, Google Calendar...</div>
-                        <div style="margin-top: 1rem;">
-                            <span class="badge badge-success">Authenticated</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-content" id="settings-3">
-                    <div class="alert alert-warning">
-                        Admin features restricted to organization owners.
-                    </div>
-                    <div class="card">
-                        <div class="card-title">System Logs</div>
-                        <div class="card-subtitle">Audit trail & performance</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- NAVIGATION BAR -->
-        <div class="nav-bar">
-            <button class="nav-item active" onclick="navigateToModule(1)">
-                <div class="nav-icon">🏠</div>
-                <div>Home</div>
-            </button>
-            <button class="nav-item" onclick="navigateToModule(2)">
-                <div class="nav-icon">🔍</div>
-                <div>Discover</div>
-            </button>
-            <button class="nav-item" onclick="navigateToModule(3)">
-                <div class="nav-icon">💬</div>
-                <div>Engage</div>
-            </button>
-            <button class="nav-item" onclick="navigateToModule(4)">
-                <div class="nav-icon">📊</div>
-                <div>Intel</div>
-            </button>
-            <button class="nav-item" onclick="navigateToModule(5)">
-                <div class="nav-icon">👥</div>
-                <div>Team</div>
-            </button>
-            <button class="nav-item" onclick="navigateToModule(6)">
-                <div class="nav-icon">💼</div>
-                <div>Deals</div>
-            </button>
-            <button class="nav-item" onclick="navigateToModule(7)">
-                <div class="nav-icon">🏪</div>
-                <div>Market</div>
-            </button>
-            <button class="nav-item" onclick="navigateToModule(8)">
-                <div class="nav-icon">⚙️</div>
-                <div>Settings</div>
-            </button>
-        </div>
+    <div class="topbar-right">
+      <div class="consultant-name">Consultor: <strong id="currentName">—</strong></div>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
+  </div>
 
-    <script>
-        // Initialize clock
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('timeDisplay').textContent = `${hours}:${minutes}`;
+  <div class="container">
+    <div id="loading" style="text-align:center;padding:60px;color:var(--dim);">A carregar dados...</div>
+    <div id="content" style="display:none">
+
+      <!-- KPIs -->
+      <div class="kpi-row" id="kpiRow"></div>
+
+      <!-- Pipeline Funnel (Director only) -->
+      <div id="funnelSection" style="display:none">
+        <div class="section-title">Funil da Equipa</div>
+        <div class="chart-container">
+          <canvas id="funnelChart" height="80"></canvas>
+        </div>
+      </div>
+
+      <!-- Clients -->
+      <div class="section-title">Os Meus Clientes <span class="count" id="clientCount">0</span></div>
+      <div class="client-grid" id="clientGrid"></div>
+
+      <!-- Upcoming Visits -->
+      <div class="section-title">Próximas Visitas <span class="count" id="visitCount">0</span></div>
+      <div id="visitsList"></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// SUPABASE CONFIG
+// ══════════════════════════════════════════════════════════════
+const SB_URL = 'https://btkdpjlltekssobfzdhu.supabase.co/rest/v1';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0a2RwamxsdGVrc3NvYmZ6ZGh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NzA4ODgsImV4cCI6MjA4NjI0Njg4OH0.6IwYG23OD9Rh2fpVMlGiaZy77d3CKczpudIzjZ9dEZM';
+const H = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+const PASSWORD = 'alatus2026';
+
+const STAGE_MAP = {
+  'qualificacao': { label: 'Qualificação', color: '#3b82f6', order: 1 },
+  'visitas':      { label: 'Visitas',      color: '#8b5cf6', order: 2 },
+  'oferta':       { label: 'Oferta',       color: '#f59e0b', order: 3 },
+  'cpcv':         { label: 'CPCV',         color: '#ec4899', order: 4 },
+  'credito':      { label: 'Crédito',      color: '#06b6d4', order: 5 },
+  'escritura':    { label: 'Escritura',    color: '#22c55e', order: 6 },
+  'concluido':    { label: 'Concluído',    color: '#22c55e', order: 7 }
+};
+
+const STATUS_VISIT = {
+  'done':      { label: 'Realizada',  class: 'vs-done' },
+  'confirmed': { label: 'Confirmada', class: 'vs-confirmed' },
+  'proposed':  { label: 'Proposta',   class: 'vs-proposed' },
+  'cancelled': { label: 'Cancelada',  class: 'vs-cancelled' }
+};
+
+let currentConsultant = null;
+let allConsultants = [];
+
+// ══════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════
+async function q(table, params='') {
+  const r = await fetch(`${SB_URL}/${table}?${params}`, { headers: H });
+  if (!r.ok) throw new Error(`Supabase ${r.status}: ${r.statusText}`);
+  return r.json();
+}
+
+function esc(s) { if(!s)return''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+function fmtDate(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('pt-PT',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Europe/Lisbon'}); }
+function fmtDateTime(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Lisbon'}); }
+function fmtMoney(v) { if(!v) return '—'; return new Intl.NumberFormat('pt-PT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v); }
+
+function scoreClass(score) {
+  if (score >= 75) return 'score-pronto';
+  if (score >= 50) return 'score-quase';
+  if (score >= 25) return 'score-preparar';
+  return 'score-frio';
+}
+function scoreLabel(score) {
+  if (score >= 75) return 'Pronto';
+  if (score >= 50) return 'Quase';
+  if (score >= 25) return 'A preparar';
+  return 'Frio';
+}
+
+// ══════════════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════════════
+async function loadConsultants() {
+  try {
+    allConsultants = await q('consultants', 'order=name');
+    const sel = document.getElementById('consultantSelect');
+    allConsultants.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name + (c.role === 'director' ? ' (Director)' : '');
+      sel.appendChild(opt);
+    });
+  } catch(e) { console.error('Erro a carregar consultores:', e); }
+}
+
+function doLogin() {
+  const pwd = document.getElementById('pwdInput').value;
+  const cid = document.getElementById('consultantSelect').value;
+  const err = document.getElementById('authError');
+
+  if (pwd !== PASSWORD) { err.style.display = 'block'; err.textContent = 'Password incorrecta'; return; }
+  if (!cid) { err.style.display = 'block'; err.textContent = 'Selecciona o teu nome'; return; }
+
+  currentConsultant = allConsultants.find(c => c.id === cid);
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('currentName').textContent = currentConsultant.name;
+
+  loadDashboard();
+}
+
+function doLogout() {
+  currentConsultant = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('consultantSelect').value = '';
+}
+
+document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// ══════════════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════════════
+async function loadDashboard() {
+  try {
+    const isDirector = currentConsultant.role === 'director';
+
+    // Fetch data
+    const clientFilter = isDirector ? '' : `consultant_id=eq.${currentConsultant.id}&`;
+    const [clients, progress, visits, stages, qualifications] = await Promise.all([
+      q('clients', `${clientFilter}status=eq.active&order=qualification_score.desc`),
+      q('client_pipeline_progress', 'order=stage_key'),
+      q('visits', `${clientFilter.replace('consultant_id','consultant_id')}order=proposed_datetime.desc`),
+      q('pipeline_stages', 'order=stage_order'),
+      q('qualification_responses', 'order=created_at.desc')
+    ]);
+
+    // Map progress by client
+    const progressMap = {};
+    progress.forEach(p => {
+      if (!progressMap[p.client_id]) progressMap[p.client_id] = [];
+      progressMap[p.client_id].push(p);
+    });
+
+    // Map qualifications by client
+    const qualMap = {};
+    qualifications.forEach(qr => { qualMap[qr.client_id] = qr; });
+
+    // Map stage sub_tasks
+    const stageTaskMap = {};
+    stages.forEach(s => { stageTaskMap[s.stage_key] = s; });
+
+    // ── KPIs ──
+    const activeClients = clients.length;
+    const avgScore = clients.length ? Math.round(clients.reduce((a,c) => a + (c.qualification_score||0), 0) / clients.length) : 0;
+    const upcomingVisits = visits.filter(v => v.visit_status === 'confirmed' || v.visit_status === 'proposed').length;
+    const doneVisits = visits.filter(v => v.visit_status === 'done').length;
+
+    const totalTasks = progress.length;
+    const doneTasks = progress.filter(p => p.completed).length;
+
+    document.getElementById('kpiRow').innerHTML = `
+      <div class="kpi">
+        <div class="kpi-label">Clientes Activos</div>
+        <div class="kpi-value">${activeClients}</div>
+        <div class="kpi-sub">${isDirector ? 'Toda a equipa' : 'Os teus'}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Score Médio</div>
+        <div class="kpi-value" style="color:${avgScore >= 70 ? 'var(--success)' : avgScore >= 40 ? 'var(--warning)' : 'var(--dim)'}">${avgScore}</div>
+        <div class="kpi-sub">Qualificação</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Visitas Agendadas</div>
+        <div class="kpi-value" style="color:var(--info)">${upcomingVisits}</div>
+        <div class="kpi-sub">${doneVisits} realizadas</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Tarefas</div>
+        <div class="kpi-value">${doneTasks}/${totalTasks}</div>
+        <div class="kpi-sub">${totalTasks > 0 ? Math.round(doneTasks/totalTasks*100) : 0}% completas</div>
+      </div>
+    `;
+
+    // ── Funnel (Director) ──
+    if (isDirector) {
+      document.getElementById('funnelSection').style.display = 'block';
+      const funnelData = {};
+      stages.forEach(s => { funnelData[s.stage_key] = { name: s.stage_name, count: 0, order: s.stage_order }; });
+      clients.forEach(c => { if (funnelData[c.pipeline_stage]) funnelData[c.pipeline_stage].count++; });
+
+      const sortedStages = Object.values(funnelData).sort((a,b) => a.order - b.order);
+      const stageKeys = Object.keys(funnelData).sort((a,b) => funnelData[a].order - funnelData[b].order);
+
+      new Chart(document.getElementById('funnelChart'), {
+        type: 'bar',
+        data: {
+          labels: sortedStages.map(s => s.name),
+          datasets: [{
+            data: sortedStages.map(s => s.count),
+            backgroundColor: stageKeys.map(k => STAGE_MAP[k]?.color || '#666'),
+            borderRadius: 6,
+            barThickness: 40
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#8a9a90', stepSize: 1 } },
+            y: { grid: { display: false }, ticks: { color: '#e4e4e7', font: { size: 13 } } }
+          }
         }
+      });
+    }
 
-        updateClock();
-        setInterval(updateClock, 1000);
+    // ── Client Cards ──
+    document.getElementById('clientCount').textContent = clients.length;
+    const grid = document.getElementById('clientGrid');
+    grid.innerHTML = '';
 
-        // Splash screen handler
-        function startApp() {
-            const splash = document.getElementById('splash');
-            const appContainer = document.getElementById('appContainer');
-            splash.classList.add('hidden');
-            setTimeout(() => {
-                appContainer.classList.add('visible');
-            }, 100);
-        }
+    clients.forEach(client => {
+      const cProgress = progressMap[client.id] || [];
+      const cQual = qualMap[client.id];
+      const done = cProgress.filter(p => p.completed).length;
+      const total = cProgress.length;
+      const pct = total > 0 ? Math.round(done/total*100) : 0;
+      const stage = STAGE_MAP[client.pipeline_stage] || { label: client.pipeline_stage, color: '#666' };
 
-        // Navigation
-        function navigateToModule(moduleNum) {
-            const modules = document.querySelectorAll('.module');
-            modules.forEach(m => m.classList.remove('active'));
-            document.getElementById(`module-${moduleNum}`).classList.add('active');
+      // Get pending tasks for this client
+      const pendingTasks = cProgress.filter(p => !p.completed).slice(0, 3);
+      const doneTasks = cProgress.filter(p => p.completed);
 
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach((item, index) => {
-                item.classList.toggle('active', index === moduleNum - 1);
-            });
+      // Get consultant name
+      const consultant = allConsultants.find(c => c.id === client.consultant_id);
 
-            // Reset scroll position
-            document.getElementById('content').scrollTop = 0;
-        }
+      const card = document.createElement('div');
+      card.className = 'client-card';
+      card.innerHTML = `
+        <div class="client-header">
+          <div>
+            <div class="client-name">${esc(client.name)}</div>
+            <div style="font-size:12px;color:var(--dim);margin-top:2px;">${consultant ? consultant.name : '—'}</div>
+          </div>
+          <div class="client-score ${scoreClass(client.qualification_score)}">
+            ${client.qualification_score} — ${scoreLabel(client.qualification_score)}
+          </div>
+        </div>
+        <div class="client-details">
+          <div class="row"><span>Fase</span><span class="value" style="color:${stage.color}">${stage.label}</span></div>
+          <div class="row"><span>Tipologia</span><span class="value">${esc(client.search_typology) || '—'}</span></div>
+          <div class="row"><span>Orçamento</span><span class="value">${fmtMoney(client.budget_min)} — ${fmtMoney(client.budget_max)}</span></div>
+          <div class="row"><span>Zonas</span><span class="value">${client.search_zones ? client.search_zones.join(', ') : '—'}</span></div>
+          ${cQual ? `<div class="row"><span>Urgência</span><span class="value">${esc(cQual.urgency)}</span></div>` : ''}
+          ${cQual && cQual.has_pre_approval ? `<div class="row"><span>Pré-aprovação</span><span class="value" style="color:var(--success)">${fmtMoney(cQual.pre_approval_amount)} (${esc(cQual.pre_approval_bank)})</span></div>` : ''}
+        </div>
+        <div class="pipeline-bar-container">
+          <div class="pipeline-label">
+            <span>Progresso</span>
+            <span>${done}/${total} tarefas · ${pct}%</span>
+          </div>
+          <div class="pipeline-bar">
+            <div class="pipeline-fill" style="width:${pct}%;background:${stage.color}"></div>
+          </div>
+        </div>
+        ${pendingTasks.length > 0 ? `
+        <div class="tasks-section">
+          <div class="tasks-title">Próximas tarefas</div>
+          ${pendingTasks.map(t => {
+            const stg = stageTaskMap[t.stage_key];
+            const taskDef = stg ? (stg.sub_tasks || []).find(st => st.key === t.sub_task_key) : null;
+            const label = taskDef ? taskDef.label : t.sub_task_key;
+            return `<div class="task-item">
+              <div class="task-check"></div>
+              <span class="task-text">${esc(label)}</span>
+            </div>`;
+          }).join('')}
+        </div>` : ''}
+      `;
+      grid.appendChild(card);
+    });
 
-        // Tab switching
-        function switchTab(button, tabId) {
-            const tabs = button.parentElement.nextElementSibling.parentElement.querySelectorAll('.tab-content');
-            tabs.forEach(t => t.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+    // ── Visits ──
+    const clientVisits = visits.filter(v =>
+      clients.some(c => c.id === v.client_id)
+    );
+    document.getElementById('visitCount').textContent = clientVisits.length;
+    const visitsList = document.getElementById('visitsList');
+    visitsList.innerHTML = '';
 
-            const buttons = button.parentElement.querySelectorAll('.tab-btn');
-            buttons.forEach(b => b.classList.remove('active'));
-            button.classList.add('active');
-        }
+    if (clientVisits.length === 0) {
+      visitsList.innerHTML = '<div style="color:var(--dim);padding:20px;">Sem visitas agendadas</div>';
+    } else {
+      clientVisits.forEach(v => {
+        const client = clients.find(c => c.id === v.client_id);
+        const vs = STATUS_VISIT[v.visit_status] || { label: v.visit_status, class: '' };
+        const stars = v.client_rating ? '★'.repeat(v.client_rating) + '☆'.repeat(5-v.client_rating) : '';
 
-        // Alert handler
-        function showAlert(message, type) {
-            alert(`[${type.toUpperCase()}] ${message}`);
-        }
+        visitsList.innerHTML += `
+          <div class="visit-card">
+            <div class="visit-header">
+              <div>
+                <strong>${esc(v.property_address)}</strong>
+                <div style="font-size:12px;color:var(--dim)">${esc(v.property_typology)} · ${fmtMoney(v.property_price)} · Ref: ${esc(v.property_ref)}</div>
+              </div>
+              <span class="visit-status ${vs.class}">${vs.label}</span>
+            </div>
+            <div class="visit-details">
+              <strong>${client ? esc(client.name) : '—'}</strong> · ${fmtDateTime(v.proposed_datetime)}
+              ${v.consultant_notes ? `<div style="margin-top:6px;font-style:italic;">"${esc(v.consultant_notes)}"</div>` : ''}
+            </div>
+            ${stars ? `<div class="visit-rating" style="color:var(--gold)">${stars} <span style="color:var(--dim)">${esc(v.client_feedback)}</span></div>` : ''}
+          </div>
+        `;
+      });
+    }
 
-        // Language toggle
-        document.getElementById('langToggle').addEventListener('click', function() {
-            this.textContent = this.textContent === 'EN' ? 'PT' : 'EN';
-        });
+    // Show content
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
 
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowRight') {
-                const currentNav = document.querySelector('.nav-item.active');
-                const nextNav = currentNav.nextElementSibling;
-                if (nextNav && nextNav.classList.contains('nav-item')) {
-                    nextNav.click();
-                }
-            } else if (e.key === 'ArrowLeft') {
-                const currentNav = document.querySelector('.nav-item.active');
-                const prevNav = currentNav.previousElementSibling;
-                if (prevNav && prevNav.classList.contains('nav-item')) {
-                    prevNav.click();
-                }
-            }
-        });
+  } catch(e) {
+    document.getElementById('loading').innerHTML = '<span style="color:var(--error)">Erro: ' + esc(e.message) + '</span>';
+    console.error(e);
+  }
+}
 
-        // PWA support
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').catch(() => {});
-        }
-    </script>
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+loadConsultants();
+setInterval(() => { if(currentConsultant) loadDashboard(); }, 300000);
+</script>
 </body>
 </html>
